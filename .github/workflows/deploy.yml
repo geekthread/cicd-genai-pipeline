@@ -1,10 +1,10 @@
 name: "Deploy Application"
 on: [push]
 jobs:
-  checkout:
+  checkout_test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkou & Test code
+      - name: Checkout & Test code
         uses: actions/checkout@v6 
         with:
           path: myfolder
@@ -15,5 +15,12 @@ jobs:
         working-directory: myfolder
       - name: Running Tests
         run: npx vitest run src/App.test.jsx
+        working-directory: myfolder
+  build: 
+    needs: checkout_test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Application
+        run: npm run build
         working-directory: myfolder
     
