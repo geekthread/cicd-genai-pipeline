@@ -20,7 +20,12 @@ jobs:
     needs: checkout_test
     runs-on: ubuntu-latest
     steps:
-      - name: Build Application
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+            path: myfolder
+      - name: List files
+        run: ls -la myfolder
+      - name: Building the application
         run: npm run build
         working-directory: myfolder
-    
