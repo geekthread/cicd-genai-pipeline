@@ -6,50 +6,52 @@ jobs:
     steps:
       - name: Checkout & Test code
         uses: actions/checkout@v6 
-        with:
-          path: myfolder
-      - name: List files
-        run: ls -la myfolder
       - name: Install dependencies
         run: npm install
-        working-directory: myfolder
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: runner-${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      -  name: Install dependencies
+         if: steps.cache-node-modules.outputs.cache-hit != 'true'
+         run: npm install
       - name: Running Tests
-        run: npx vitest run src/App.test.jsx
-        working-directory: myfolder
+        run: npx test
   build: 
     needs: checkout_test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+      - name: Cache node modules
+        uses: actions/cache@v3
         with:
-            path: myfolder
+          path: node_modules
+          key: runner-${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'   
         run: npm install
-        working-directory: myfolder
+        
       - name: Building the application
         run: npm run build
-        working-directory: myfolder
+      
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-        with:
-            path: myfolder
+       
             
       - name: Install dependencies
         run: npm install
-        working-directory: myfolder
-        
+      
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '22'
-
-      - name: Print Node.js version
-        run: node -v
 
       - name: Deploying the application
         run: echo "Deploying the application..."
