@@ -4,6 +4,7 @@ on:
         branches: [main]
         paths-ignore:
             - ".github/workflows/**"
+            - ".github/action/**"
     workflow_dispatch:
 jobs:
   checkout_test:
