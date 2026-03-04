@@ -6,16 +6,15 @@ jobs:
     steps:
       - name: Checkout & Test code
         uses: actions/checkout@v4
-      - name: Install dependencies
-        run: npm install
       - name: Cache node modules
+        id: cache-node-modules
         uses: actions/cache@v3
         with:
           path: node_modules
           key: runner-${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      -  name: Install dependencies
-         if: steps.cache-node-modules.outputs.cache-hit != 'true'
-         run: npm install
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: npm install
       - name: Running Tests
         run: npm test
   build: 
