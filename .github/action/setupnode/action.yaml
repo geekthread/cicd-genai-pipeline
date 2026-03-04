@@ -3,8 +3,6 @@ description: "This action sets up Node.js and it's dependencies for the workflow
 runs:
   using: "composite"
   steps:
-    - name: Clone the repository
-      uses: actions/checkout@v4
     - name: Cache node modules
       id: cache-node-modules
       uses: actions/cache@v3

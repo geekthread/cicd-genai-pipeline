@@ -9,16 +9,20 @@ jobs:
   checkout_test:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Setup Node.js and install dependencies
         uses: ./.github/action/setupnode
       - name: Run tests
         run: npm test
-  build: 
+  build:
     needs: checkout_test
     runs-on: ubuntu-latest
     steps:
-      -  name: Setup Node.js and install dependencies
-         uses: ./.github/action/setupnode
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js and install dependencies
+        uses: ./.github/action/setupnode
       - name: Building the application
         run: npm run build
       
@@ -26,7 +30,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-        - name: Setup Node.js and install dependencies
-          uses: ./.github/action/setupnode
-        - name: Deploying the application
-          run: npm run deploy
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js and install dependencies
+        uses: ./.github/action/setupnode
+      - name: Deploying the application
+        run: npm run deploy
