@@ -12,6 +12,11 @@ jobs:
         with:
           path: node_modules
           key: runner-${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
       - name: Install dependencies
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm install
@@ -30,10 +35,16 @@ jobs:
         with:
           path: node_modules
           key: runner-${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
       - name: Install dependencies
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm install
-        
+
       - name: Building the application
         run: npm run build
       
@@ -50,15 +61,17 @@ jobs:
         with:
           path: node_modules
           key: runner-${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
              
       - name: Install dependencies
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm install
       
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
+      
 
       - name: Deploying the application
         run: echo "Deploying the application..."
