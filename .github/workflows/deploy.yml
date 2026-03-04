@@ -9,8 +9,6 @@ jobs:
   checkout_test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout & Test code
-        uses: actions/checkout@v4
       - name: Setup Node.js and install dependencies
         uses: ./.github/action/setupnode
       - name: Run tests
@@ -19,25 +17,8 @@ jobs:
     needs: checkout_test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Cache node modules
-        id: cache-node-modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: runner-${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install dependencies
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: npm install
-
+      -  name: Setup Node.js and install dependencies
+         uses: ./.github/action/setupnode
       - name: Building the application
         run: npm run build
       
@@ -45,26 +26,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Cache node modules
-        id: cache-node-modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: runner-${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-             
-      - name: Install dependencies
-        if: steps.cache-node-modules.outputs.cache-hit != 'true'
-        run: npm install
-      
-      
-
-      - name: Deploying the application
-        run: echo "Deploying the application..."
+        - name: Setup Node.js and install dependencies
+          uses: ./.github/action/setupnode
+        - name: Deploying the application
+          run: npm run deploy
