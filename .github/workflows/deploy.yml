@@ -30,3 +30,13 @@ jobs:
       - name: Building the application
         run: npm run build
         working-directory: myfolder
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+            path: myfolder
+      - name: Deploying the application
+        run: echo "Deploying the application..."
