@@ -26,14 +26,20 @@ jobs:
         uses: ./.github/action/setupnode
       - name: Building the application
         run: npm run build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist
       
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Setup Node.js and install dependencies
-        uses: ./.github/action/setupnode
-      - name: Deploying the application
-        run: npm run deploy
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist
+      - name: Check Artifacts
+        run: ls dist
