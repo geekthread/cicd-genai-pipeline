@@ -1,0 +1,55 @@
+name: "Deploy Application To GitHub Pages"
+on: 
+    push:
+        branches: [main]
+        paths-ignore:
+            - ".github/action/**"
+    workflow_dispatch:
+jobs:
+  checkout_test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js and install dependencies
+        uses: ./.github/action/setupnode
+      - name: Run tests
+        run: npm test
+  build:
+    needs: checkout_test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js and install dependencies
+        uses: ./.github/action/setupnode
+      - name: Building the application
+        run: npm run build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist
+      
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    # Add a dependency to the build job
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+   
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 # or specific "vX.X.X" version tag for this action
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} # Automatically provided by GitHub Actions
